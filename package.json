@@ -4,7 +4,9 @@
   "description": "nodejs study",
   "main": "server.js",
   "scripts": {
-    "test": "start"
+    "test": "start",
+    "start": "nodemon server.js"
+
   },
   "repository": {
     "type": "git",
