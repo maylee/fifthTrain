@@ -1,10 +1,31 @@
 const http = require('http');
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 const morgan = require('morgan');
 
+
 const orderRoutes = require('./api/routes/orders');
 const productRoutes = require('./api/routes/products');
+
+
+// body-parser header (코드가 놓이는 위치 중요, 아래의 서브경로 앞에 선언)
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended:true }));
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    );
+    if (req.method === 'OPTIONS') {
+        res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+        return res.status(200).json({});
+    }
+    next();
+});
+
+
 
 app.use(morgan('dev'));
 app.use('/orders', orderRoutes);
@@ -28,6 +49,8 @@ app.use((error, req, res, next) => {
         }        
     });
 });
+
+
 
 const PORT = 3000;
 const server = http.createServer(app);

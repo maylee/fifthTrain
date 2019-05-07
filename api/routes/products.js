@@ -23,8 +23,13 @@ router.get('/:productId',(req,res) => {
 
 // post
 router.post('/', (req, res) => {
+    const productInfo = {
+        name: req.body.name,
+        price: req.body.price
+    };
     res.status(200).json({
-        prd_msg:"POST / proudcts"
+        prd_msg:"POST / proudcts",
+        productInfo: productInfo
     });
 });
 
