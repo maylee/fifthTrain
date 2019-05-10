@@ -82,11 +82,25 @@ router.patch('/', (req,res) => {
     });
 });
 
-// delete
-router.delete('/', (req, res) => {
-    res.status(200).json({
-        prd_msg:"DELETE / products"
-    });
+// Delete Product Info by productId
+router.delete('/:productId', (req,res) => {
+    const id = req.params.productId;
+    productModel
+        .remove({ _id: id })
+        .exec()
+        .then( result => {
+            res.status(200).json({
+                prd_msg:"삭제 성공", 
+                "삭제상품아이디": id
+            });
+        })
+        .catch( err => {
+            console.log(err);
+            res.status(500).json({
+                prd_err: "삭제중 오류발생"
+                // prd_err: err
+            });
+        });
 });
 
 module.exports = router;
