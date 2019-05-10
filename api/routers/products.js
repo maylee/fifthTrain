@@ -4,25 +4,24 @@ const router = express.Router() ;
 const mongoose = require('mongoose');
 const productModel = require('../models/product');
 
-// get
-router.get('/',(req,res)=> {
-    res.status(200).json({
-        prd_msg: "GET /products"
-    });
-});
-
-// get with parameter
-router.get('/:productId',(req,res) => {
-    if (req.params.productId === 'special') {
+// Get All productInfo from DB
+router.get('/', (req, res) => {
+    productModel
+      .find()
+      .exec()
+      .then( docs =>{
+        console.log(docs);
         res.status(200).json({
-            prd_msg:"GET / special product"
+          product_Info: docs
         });
-    } else {
-        res.status(200).json({
-            prd_msg:"GET / normal product"
+      })
+      .catch( err => {
+        console.log(err);
+        res.status(500).json({
+          product_err: err
         });
-    }
-});
+      });
+  });
 
 // post
 router.post('/', (req, res) => {
