@@ -6,8 +6,8 @@ const app = express();
 const morgan = require('morgan');
 
 
-const orderRoutes = require('./api/routes/orders');
-const productRoutes = require('./api/routes/products');
+const orderRoutes = require('./api/routers/orders');
+const productRoutes = require('./api/routers/products');
 
 
 // body-parser header (코드가 놓이는 위치 중요, 아래의 서브경로 앞에 선언)
