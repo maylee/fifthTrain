@@ -5,11 +5,29 @@ const mongoose = require('mongoose');
 const orderModel = require('../models/order');
 const productModel = require('../models/product');
 
-// get
-router.get("/", (req, res) => {
-  res.status(200).json({
-      ord_msg: "GET /orders"
-  });
+// Get All Order Info
+router.get('/', (req, res) => {
+  orderModel.find()
+    .select("product quantity _id")
+    .exec()
+    .then( docs => {
+      res.status(200).json({
+        count: docs.length,
+        order: docs.map( doc => {
+          return{
+             orderId: doc.id,
+             productId: doc.product,
+             quantity: doc.quantity
+        }
+        })
+      });
+    })
+    .catch( err => {
+      res.status(500).json({
+        //ord_err: "주문정보조회에 문제가 생겼습니다."
+        ord_err: err
+      });
+    });
 });
 
 // get with parameter
