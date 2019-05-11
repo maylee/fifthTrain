@@ -30,18 +30,26 @@ router.get('/', (req, res) => {
     });
 });
 
-// get with parameter
+// Get Order Info by OrderId Parameter
 router.get('/:orderId',(req,res) => {
   const id = req.params.orderId;
-  if( id !== '123'){
+  orderModel.findById(id)
+    .exec()
+    .then( order => {
+      if (!order) {
+        return res.status(400).json({
+          ord_err: "주문정보를 찾지 못했습니다."
+        });
+      }
       res.status(200).json({
-          ord_msg: "Wrong ID"
+        orderInfo : order
       });
-  } else {
-      res.status(200).json({
-        ord_msg: "Correct ID"
+    })      
+    .catch( err => {
+      res.status(500).json({
+        ord_err: "주문정보 조회에 문제가 발생하였습니다."
       });
-  };
+    });
 });
 
 // Register Order Info - POST
