@@ -95,11 +95,20 @@ router.patch('/',(req,res) => {
   });
 });
 
-// delete
-router.delete('/',(req,res) => {
-  res.status(200).json({
-    ord_msg:"DELETE / orders"
-  });
+// Delete Order Info by OrderId Parameter
+router.delete('/:orderId', (req, res, next) => {
+  orderModel.remove( { _id: req.params.orderId })
+    .exec()
+    .then( result => {
+      res.status(200).json({
+        ord_msg: "주문정보가 성공적으로 삭제되었습니다."
+      });
+    })
+    .catch( err => {
+      res.status(500).json({
+        ord_err: "주문 취소에 문제가 생겼습니다."
+      });
+    });
 });
 
 module.exports = router;
