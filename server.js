@@ -1,7 +1,7 @@
 const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongoos = require('mongoose');
+const mongoose = require('mongoose');
 const app = express();
 const morgan = require('morgan');
 
@@ -28,10 +28,13 @@ app.use((req, res, next) => {
 
 // DB Connection
 const db = require('./config/key').mongoURI;
-mongoos
+mongoose
     .connect(db, { useNewUrlParser:true })
     .then( () => console.log("MongoDB Connected..."))
     .catch( err => console.log(err));
+
+mongoose.Promise = global.Promise; 
+
 
 app.use(morgan('dev'));
 app.use('/orders', orderRoutes);

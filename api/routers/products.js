@@ -5,15 +5,26 @@ const mongoose = require('mongoose');
 const productModel = require('../models/product');
 
 // Get All productInfo from DB
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
     productModel
       .find()
       .exec()
       .then( docs =>{
-        console.log(docs);
-        res.status(200).json({
-          product_Info: docs
-        });
+        const response = {
+            count: docs.length,
+            products: docs.map( doc => {
+                return{
+                    name: doc.name,
+                    price: doc.price,
+                    _id: doc._id,
+                    request: {
+                        type: "GET", 
+                        url: "http://localhost:3000/products/" + doc._id
+                    }
+                };
+            })
+        }
+        res.status(200).json(response);
       })
       .catch( err => {
         console.log(err);
@@ -32,7 +43,11 @@ router.get('/:productId', (req,res) => {
             console.log("Quering DB...", doc);
             if (doc) {
                 res.status(200).json({
-                    product_Info: doc
+                    product_Info: doc,
+                    request:{
+                        type: "GET",
+                        url: "http://localhost:3000/products/" + id
+                    }
                 });
             } else {
                 res.status(400).json({
@@ -61,8 +76,13 @@ router.post('/', (req,res) =>{
         .then( result => {
             console.log(result);
             res.status(200).json({
-                prd_msg: "POST prudctInfo OK",
-                createProduct: result
+                prd_msg: "상품정보가 업데이트되었습니다.",
+                createProduct: result,
+                request: {
+                    type: "POST",
+                    url: "http://localhost:3000/products/"
+                }
+
             });
         })
         .catch( err => {
@@ -91,7 +111,13 @@ router.delete('/:productId', (req,res) => {
         .then( result => {
             res.status(200).json({
                 prd_msg:"삭제 성공", 
-                "삭제상품아이디": id
+                "삭제상품아이디": id,
+                request: {
+                    type: "DELETE",
+                    url: "http://localhost:3000/products",
+                    body: { name: 'String', price: 'Number'}
+
+                }
             });
         })
         .catch( err => {
